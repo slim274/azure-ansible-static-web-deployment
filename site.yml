@@ -1,0 +1,55 @@
+---
+# PLAY 1: Install nginx
+- name: Install and configure nginx
+  hosts: web
+  become: true
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Ensure nginx is running
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+
+# PLAY 2: Deploy static website
+- name: Deploy static website
+  hosts: web
+  become: true
+
+  tasks:
+    - name: Copy index.html to web servers
+      copy:
+        src: files/index.html
+        dest: /var/www/html/index.html
+        owner: www-data
+        group: www-data
+        mode: '0644'
+      notify: restart nginx
+
+  handlers:
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted
+
+
+# PLAY 3: Verify deployment
+- name: Verify website is reachable
+  hosts: localhost
+
+  tasks:
+    - name: Check website response
+      uri:
+        url: "http://{{ item }}"
+        status_code: 200
+      loop: "{{ groups['web'] }}"

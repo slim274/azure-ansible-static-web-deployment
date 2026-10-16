@@ -1,0 +1,9 @@
+flowchart LR
+    C[Ansible controller] -->|SSH| W1[Azure web VM 1]
+    C -->|SSH| W2[Azure web VM 2]
+    S[Local files/index.html] --> C
+    P[Ansible site.yml] --> C
+    C -->|Play 1: install nginx| W1
+    C -->|Play 2: copy static content| W2
+    W1 --> V[Play 3: HTTP verification]
+    W2 --> V

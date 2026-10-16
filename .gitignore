@@ -1,0 +1,19 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfplan
+
+# Credentials
+*.pem
+*.key
+.env
+.env.*
+id_rsa
+id_ed25519
+
+# Ansible
+*.retry
+.vault_pass
+vault-password*
